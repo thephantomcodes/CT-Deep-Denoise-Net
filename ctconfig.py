@@ -1,1 +1,1 @@
-HOME_DIR = "/home/dstring"
+HOME_DIR = "/home/dir"
