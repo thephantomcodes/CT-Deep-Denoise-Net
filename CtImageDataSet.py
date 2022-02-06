@@ -1,3 +1,4 @@
+import torch
 from torch.utils.data import DataLoader, Dataset
 from scipy import io as scio
 import glob
@@ -17,15 +18,31 @@ class CtImageDataset(Dataset):
 
     def __getitem__(self, idx):
         file_pattern = self.img_dir + "*.mat"
-        files = glob.glob(file_pattern)
-        file = files[idx]
-        mat = scio.loadmat(file)
+        file_names = glob.glob(file_pattern)
+        file_name = file_names[idx]
+        mat = scio.loadmat(file_name)
+
         # Image generated from 1/4 of available projections
-        image = np.array(mat['fbp_0'], dtype='float32')
+        # image = np.array(mat['fbp_0'], dtype='float32')
         # Image generated from all available projections
-        label = np.array(mat['fbp_0'] + mat['fbp_1'] + mat['fbp_2'] + mat['fbp_3'], dtype='float32')
+        # label = np.array(mat['fbp_0'] + mat['fbp_1'] + mat['fbp_2'] + mat['fbp_3'], dtype='float32')
+
+        # Image corrupted w/ Gaussian noise
+        image = np.array(mat['fbp_n'], dtype='float32')
+        # Clean image
+        label = np.array(mat['fbp'], dtype='float32')
+
+        # image = image / np.max(image)
+        # label = label / np.max(label)
+
         if self.transform:
             image = self.transform(image)
         if self.target_transform:
             label = self.target_transform(label)
-        return image, label, file
+
+        patch_shape = np.shape(image)
+        input0 = torch.zeros(1, patch_shape[0], patch_shape[1])
+        input0[0] = torch.from_numpy(image)
+        output0 = torch.zeros(1, patch_shape[0], patch_shape[1])
+        output0[0] = torch.from_numpy(label)
+        return input0, output0, file_name
