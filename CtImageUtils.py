@@ -3,6 +3,7 @@ import numpy as np
 import torch
 from torch import nn
 import ctconfig as ctc
+import time
 
 
 # Define model
@@ -14,52 +15,53 @@ class NeuralNetwork(nn.Module):
         stride = 1
         padding = 1
         self.num_features = 50
+        expansion = 10
         
         self.conv_batch_relu_stack = nn.Sequential(
-            nn.Conv2d(in_channels=1, out_channels=self.num_features, kernel_size=filt_sz, stride=stride, padding=padding+10),
+            nn.Conv2d(in_channels=1, out_channels=self.num_features, kernel_size=filt_sz, stride=stride, padding=padding+expansion),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(in_channels=self.num_features, out_channels=1, kernel_size=filt_sz, stride=stride, padding=padding),
-            nn.ZeroPad2d(-10)
+            nn.Conv2d(in_channels=self.num_features, out_channels=1, kernel_size=filt_sz, stride=stride, padding=padding+expansion),
+            nn.ZeroPad2d(-12 * expansion)
         )
 
     def forward(self, images):
@@ -88,7 +90,7 @@ def train(dataloader, model, loss_fn, optimizer, device):
         loss.backward()
         optimizer.step()
 
-        if batch % 100 == 0:
+        if batch % 160 == 0:
             # for x in range(0, 10):
             #     plt.subplot(1, 3, 1)
             #     plt.imshow(image[x], cmap="gray")
@@ -100,7 +102,7 @@ def train(dataloader, model, loss_fn, optimizer, device):
 
             loss, current = loss.item(), batch * len(image)
             loss_sci = "{:e}".format(loss)
-            print(f"loss: {loss_sci}  [{current:>5d}/{size:>5d}]")
+            print(f"loss: {loss_sci}  [{current:>5d}/{size:>5d}] - {time.asctime(time.localtime(time.time()))}")
             # for name, param in model.named_parameters():
             #     if param.requires_grad:
             #         print(name, param.data)

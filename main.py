@@ -8,8 +8,11 @@ import CtImageUtils as ctu
 import time
 import os
 
-trial = 1
-os.mkdir(f"modelstates/{trial}/")
+trial = 2
+dest = f"modelstates/{trial}/"
+if os.path.isdir(dest) is False:
+    os.mkdir(dest)
+
 # ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Training/")
 # ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Test/")
 # ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Validation/")
@@ -43,14 +46,14 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using {device} device")
 
 model = ctu.NeuralNetwork().to(device)
-# print(model)
-# model.load_state_dict(torch.load("modelstates3/model_4.pth"))
+print(model)
+# model.load_state_dict(torch.load("modelstates9/model_1.pth"))
 # model.eval()
 
 loss_fn = nn.MSELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-epochs = 20
+epochs = 10
 for t in range(epochs):
     print(f"Epoch {t+1} - {time.asctime(time.localtime(time.time()))}\n-------------------------------")
     # print(model.parameters())

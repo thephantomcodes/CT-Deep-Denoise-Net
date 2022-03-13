@@ -8,15 +8,20 @@ import CtImageUtils as ctu
 import time
 import os
 
-epoch = 19
-trial = 1
+epoch = 2
+trial = 2
 dest = f"validationdata/{trial}/{epoch}/"
-model_src = "modelstates"
+model_src = f"modelstates/{trial}/model_{epoch}.pth"
 
 if os.path.isdir(dest) is False:
     os.mkdir(dest)
 model = ctu.NeuralNetwork()
-model.load_state_dict(torch.load(f"{model_src}/{trial}/model_{epoch}.pth"))
+
+# device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "cpu"
+print(device)
+model.load_state_dict(torch.load(model_src, map_location=torch.device("cpu")))
+print(model)
 
 # ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Training/")
 # ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Test/")
@@ -31,9 +36,8 @@ ct_test_dataloader = DataLoader(ct_test_dataset, batch_size=ctc.BATCH_SIZE, shuf
 ct_valid_dataloader = DataLoader(ct_valid_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
 
 model.eval()
-model.cuda()
-device = "cuda" if torch.cuda.is_available() else "cpu"
-print(device)
+# model.cuda()
+
 with torch.no_grad():
     for bat, (image, label, file_names) in enumerate(ct_valid_dataloader):
         print(f"Batch {bat} - {time.asctime(time.localtime(time.time()))}")
