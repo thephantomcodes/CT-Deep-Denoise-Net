@@ -6,15 +6,17 @@ from torch.utils.data import DataLoader
 import CtImageDataSet as ctid
 import CtImageUtils as ctu
 import time
+import os
 
-
+trial = 1
+os.mkdir(f"modelstates/{trial}/")
 # ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Training/")
 # ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Test/")
 # ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Validation/")
 
-ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/noisyPatches/Training32/")
-ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/noisyPatches/Test32/")
-ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/noisyPatches/Validation32/")
+ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/noisyPatches2/Training32/")
+ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/noisyPatches2/Test32/")
+ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/noisyPatches2/Validation32/")
 print("dataset size", len(ct_train_dataset))
 
 ct_train_dataloader = DataLoader(ct_train_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
@@ -56,7 +58,7 @@ for t in range(epochs):
     # print(model.parameters())
     ctu.test(ct_test_dataloader, model, loss_fn, device)
 
-    torch.save(model.state_dict(), f"modelstates/0/model_{t}.pth")
+    torch.save(model.state_dict(), f"modelstates/{trial}/model_{t}.pth")
     print("Saved PyTorch Model State to model.pth")
 print("Done!")
 
