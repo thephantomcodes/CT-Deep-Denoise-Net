@@ -56,7 +56,7 @@ for t in range(epochs):
     # print(model.parameters())
     ctu.test(ct_test_dataloader, model, loss_fn, device)
 
-    torch.save(model.state_dict(), f"modelstates5/model_{t}.pth")
+    torch.save(model.state_dict(), f"modelstates/0/model_{t}.pth")
     print("Saved PyTorch Model State to model.pth")
 print("Done!")
 
