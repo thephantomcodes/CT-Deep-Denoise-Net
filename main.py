@@ -8,18 +8,14 @@ import CtImageUtils as ctu
 import time
 import os
 
-trial = 2
+trial = 3
 dest = f"modelstates/{trial}/"
 if os.path.isdir(dest) is False:
     os.mkdir(dest)
 
-# ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Training/")
-# ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Test/")
-# ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Validation/")
-
-ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/noisyPatches2/Training32/")
-ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/noisyPatches2/Test32/")
-ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/noisyPatches2/Validation32/")
+ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm32/Training/")
+ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm32/Test/")
+ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm32/Validation/")
 print("dataset size", len(ct_train_dataset))
 
 ct_train_dataloader = DataLoader(ct_train_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)

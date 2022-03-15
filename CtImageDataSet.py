@@ -22,15 +22,15 @@ class CtImageDataset(Dataset):
         file_name = file_names[idx]
         mat = scio.loadmat(file_name)
 
-        # Image generated from 1/4 of available projections
-        # image = np.array(mat['fbp_0'], dtype='float32')
+        # Image generated from 1/4 projections
+        image = np.array(mat['fbp_0'], dtype='float32')
         # Image generated from all available projections
-        # label = np.array(mat['fbp_0'] + mat['fbp_1'] + mat['fbp_2'] + mat['fbp_3'], dtype='float32')
+        label = np.array(mat['fbp_0'] + mat['fbp_1'] + mat['fbp_2'] + mat['fbp_3'], dtype='float32')
 
-        # Image corrupted w/ Gaussian noise
-        image = np.array(mat['fbp_n'], dtype='float32')
-        # Clean image
-        label = np.array(mat['fbp'], dtype='float32')
+        # # Image corrupted w/ Gaussian noise
+        # image = np.array(mat['fbp_n'], dtype='float32')
+        # # Clean image
+        # label = np.array(mat['fbp'], dtype='float32')
 
         # image = image / np.max(image)
         # label = label / np.max(label)

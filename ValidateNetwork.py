@@ -8,8 +8,8 @@ import CtImageUtils as ctu
 import time
 import os
 
-epoch = 2
-trial = 2
+epoch = 8
+trial = 3
 dest = f"validationdata/{trial}/{epoch}/"
 model_src = f"modelstates/{trial}/model_{epoch}.pth"
 
@@ -27,9 +27,9 @@ print(model)
 # ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Test/")
 # ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Validation/")
 
-ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/noisyPatches/Training32/")
-ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/noisyPatches/Test32/")
-ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/noisy2/Validation/")
+ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm/Training/")
+ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm/Test/")
+ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm/Validation/")
 
 ct_train_dataloader = DataLoader(ct_train_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
 ct_test_dataloader = DataLoader(ct_test_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
