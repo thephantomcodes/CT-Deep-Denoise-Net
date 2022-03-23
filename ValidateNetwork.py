@@ -8,44 +8,45 @@ import CtImageUtils as ctu
 import time
 import os
 
-epoch = 8
-trial = 3
-dest = f"validationdata/{trial}/{epoch}/"
-model_src = f"modelstates/{trial}/model_{epoch}.pth"
+epochs = range(10)
+trial = 4
+for epoch in epochs:
+    dest = f"validationdata/{trial}/{epoch}/"
+    model_src = f"modelstates/{trial}/model_{epoch}.pth"
 
-if os.path.isdir(dest) is False:
-    os.mkdir(dest)
-model = ctu.NeuralNetwork()
+    if os.path.isdir(dest) is False:
+        os.mkdir(dest)
+    model = ctu.NeuralNetwork()
 
-# device = "cuda" if torch.cuda.is_available() else "cpu"
-device = "cpu"
-print(device)
-model.load_state_dict(torch.load(model_src, map_location=torch.device("cpu")))
-print(model)
+    # device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = "cpu"
+    print(device)
+    model.load_state_dict(torch.load(model_src, map_location=torch.device("cpu")))
+    print(model)
 
-# ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Training/")
-# ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Test/")
-# ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Validation/")
+    # ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Training/")
+    # ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Test/")
+    # ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/patches/Validation/")
 
-ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm/Training/")
-ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm/Test/")
-ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm/Validation/")
+    ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm/Training/")
+    ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm/Test/")
+    ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm/Validation/")
 
-ct_train_dataloader = DataLoader(ct_train_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
-ct_test_dataloader = DataLoader(ct_test_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
-ct_valid_dataloader = DataLoader(ct_valid_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
+    ct_train_dataloader = DataLoader(ct_train_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
+    ct_test_dataloader = DataLoader(ct_test_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
+    ct_valid_dataloader = DataLoader(ct_valid_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
 
-model.eval()
-# model.cuda()
+    model.eval()
+    # model.cuda()
 
-with torch.no_grad():
-    for bat, (image, label, file_names) in enumerate(ct_valid_dataloader):
-        print(f"Batch {bat} - {time.asctime(time.localtime(time.time()))}")
-        image, label = torch.tensor(image).to(device), torch.tensor(label).to(device)
-        pred = model(image)
+    with torch.no_grad():
+        for bat, (image, label, file_names) in enumerate(ct_valid_dataloader):
+            print(f"Batch {bat} - {time.asctime(time.localtime(time.time()))}")
+            image, label = torch.tensor(image).to(device), torch.tensor(label).to(device)
+            pred = model(image)
 
-        for idx, fname in enumerate(file_names):
-            imgPatch = pred[idx][0].cpu()
-            # print(torch.max(imgPatch) - torch.min(imgPatch))
-            fname_pred = fname.split("/")[-1]
-            scio.savemat(f"{dest}/{fname_pred}", {'imgPatch': np.array(imgPatch)})
+            for idx, fname in enumerate(file_names):
+                imgPatch = pred[idx][0].cpu()
+                # print(torch.max(imgPatch) - torch.min(imgPatch))
+                fname_pred = fname.split("/")[-1]
+                scio.savemat(f"{dest}/{fname_pred}", {'imgPatch': np.array(imgPatch)})
