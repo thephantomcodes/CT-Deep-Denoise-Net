@@ -25,7 +25,7 @@ class CtImageDataset(Dataset):
         # Image generated from 1/4 projections
         image = np.array(mat['fbp_0'], dtype='float32')
         # Image generated from all available projections
-        label = np.array(mat['fbp_0'] + mat['fbp_1'] + mat['fbp_2'] + mat['fbp_3'], dtype='float32')
+        label = np.array(mat['fbp'], dtype='float32')
 
         # # Image corrupted w/ Gaussian noise
         # image = np.array(mat['fbp_n'], dtype='float32')
