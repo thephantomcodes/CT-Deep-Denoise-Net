@@ -8,7 +8,7 @@ import CtImageUtils as ctu
 import time
 import os
 
-trial = 5
+trial = 6
 dest = f"modelstates/{trial}/"
 if os.path.isdir(dest) is False:
     os.mkdir(dest)

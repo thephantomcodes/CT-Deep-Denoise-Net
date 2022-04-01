@@ -23,7 +23,7 @@ class CtImageDataset(Dataset):
         mat = scio.loadmat(file_name)
 
         # Image generated from 1/4 projections
-        image = np.array(mat['fbp_0'], dtype='float32')
+        image = np.array(mat['fbp_p'], dtype='float32')
         # Image generated from all available projections
         label = np.array(mat['fbp'], dtype='float32')
 
