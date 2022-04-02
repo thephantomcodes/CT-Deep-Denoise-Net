@@ -8,8 +8,8 @@ import CtImageUtils as ctu
 import time
 import os
 
-epochs = range(8, 9)
-trial = 6
+epochs = range(10)
+trial = 7
 for epoch in epochs:
     dest = f"validationdata/{trial}/{epoch}/"
     model_src = f"modelstates/{trial}/model_{epoch}.pth"
