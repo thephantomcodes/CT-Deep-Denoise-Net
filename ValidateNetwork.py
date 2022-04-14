@@ -8,11 +8,16 @@ import CtImageUtils as ctu
 import time
 import os
 
-epochs = range(10)
-trial = 7
+s = 38
+epochs = range(s, 50)
+trial = 13
 for epoch in epochs:
     dest = f"validationdata/{trial}/{epoch}/"
     model_src = f"modelstates/{trial}/model_{epoch}.pth"
+
+    if os.path.isfile(model_src) is False:
+        print(f"{model_src} not found")
+        exit(0)
 
     if os.path.isdir(dest) is False:
         os.mkdir(dest)
@@ -25,7 +30,8 @@ for epoch in epochs:
     if device == "cuda":
         model.cuda()
 
-    print(model)
+    # print(model)
+    print(f"Epoch: {epoch}")
 
     ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm_fbp/Validation/")
     ct_valid_dataloader = DataLoader(ct_valid_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)

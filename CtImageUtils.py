@@ -14,58 +14,108 @@ class NeuralNetwork(nn.Module):
         filt_sz = 3
         stride = 1
         padding = 1
-        self.num_features = 50
+        self.num_features = 32
         expansion = 10
-        
-        self.conv_batch_relu_stack = nn.Sequential(
-            nn.Conv2d(in_channels=1, out_channels=self.num_features, kernel_size=filt_sz, stride=stride, padding=padding+expansion),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
+        self.input_layer = nn.Sequential(
+            nn.Conv2d(in_channels=1, out_channels=self.num_features, kernel_size=filt_sz, stride=stride, padding=padding),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features),
+            nn.ReLU(),
+        )
+
+        self.contracting_path_1 = nn.Sequential(
+            nn.MaxPool2d(kernel_size=2),
+
+            nn.Conv2d(self.num_features, self.num_features*2, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features*2),
+            nn.ReLU(),
+
+            nn.Conv2d(self.num_features*2, self.num_features * 2, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 2),
+            nn.ReLU(),
+
+            nn.Conv2d(self.num_features*2, self.num_features * 2, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 2),
+            nn.ReLU(),
+        )
+
+        self.contracting_path_2 = nn.Sequential(
+            nn.MaxPool2d(kernel_size=2),
+
+            nn.Conv2d(self.num_features*2, self.num_features * 4, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 4),
+            nn.ReLU(),
+
+            nn.Conv2d(self.num_features * 4, self.num_features * 4, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 4),
+            nn.ReLU(),
+
+            nn.Conv2d(self.num_features * 4, self.num_features * 4, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 4),
+            nn.ReLU(),
+        )
+
+        self.expanding_path_1 = nn.Sequential(
+            nn.Conv2d(self.num_features * 4, self.num_features * 4, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 4),
+            nn.ReLU(),
+
+            nn.Conv2d(self.num_features * 4, self.num_features * 2, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 2),
+            nn.ReLU(),
+
+            nn.Conv2d(self.num_features * 2, self.num_features, filt_sz, stride=stride, padding=padding),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
+            nn.Upsample(scale_factor=2),
+        )
+
+        self.expanding_path_2 = nn.Sequential(
+            nn.Conv2d(self.num_features * 4, self.num_features * 4, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 4),
+            nn.ReLU(),
+
+            nn.Conv2d(self.num_features * 4, self.num_features * 4, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 4),
+            nn.ReLU(),
+
+            nn.Conv2d(self.num_features * 4, self.num_features * 2, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 2),
+            nn.ReLU(),
+
+            nn.Upsample(scale_factor=2),
+        )
+
+        self.output_layer = nn.Sequential(
+            nn.ConvTranspose2d(in_channels=self.num_features*2, out_channels=self.num_features, kernel_size=filt_sz, stride=stride, padding=padding),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
+            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding),
             nn.BatchNorm2d(self.num_features),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
-            nn.BatchNorm2d(self.num_features),
-            nn.ReLU(),
-
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
-            nn.BatchNorm2d(self.num_features),
-            nn.ReLU(),
-
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
-            nn.BatchNorm2d(self.num_features),
-            nn.ReLU(),
-
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
-            nn.BatchNorm2d(self.num_features),
-            nn.ReLU(),
-
-            nn.Conv2d(self.num_features, self.num_features, filt_sz, stride=stride, padding=padding+expansion),
-            nn.BatchNorm2d(self.num_features),
-            nn.ReLU(),
-
-            nn.Conv2d(in_channels=self.num_features, out_channels=1, kernel_size=filt_sz, stride=stride, padding=padding+expansion),
-            nn.ZeroPad2d(-12 * expansion)
+            nn.Conv2d(in_channels=self.num_features, out_channels=1, kernel_size=filt_sz, stride=stride, padding=padding),
         )
 
     def forward(self, images):
-        return self.conv_batch_relu_stack(images)
+        y0 = self.input_layer(images)
+        c1 = self.contracting_path_1(y0)
+        c2 = self.contracting_path_2(c1)
+        e2 = self.expanding_path_2(c2)
+        e3 = torch.cat([c1, e2], 1)
+        e1 = self.expanding_path_1(e3)
+        y2 = torch.cat([y0, e1], 1)
+        return self.output_layer(y2)
 
 
 def train(dataloader, model, loss_fn, optimizer, device):

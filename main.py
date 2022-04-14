@@ -8,7 +8,7 @@ import CtImageUtils as ctu
 import time
 import os
 
-trial = 7
+trial = 13
 dest = f"modelstates/{trial}/"
 if os.path.isdir(dest) is False:
     os.mkdir(dest)
@@ -43,15 +43,16 @@ print(f"Using {device} device")
 
 model = ctu.NeuralNetwork().to(device)
 print(model)
-# model.load_state_dict(torch.load("modelstates9/model_1.pth"))
-# model.eval()
+
+model.load_state_dict(torch.load("modelstates/13/model_49.pth"))
+model.eval()
 
 loss_fn = nn.MSELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=1e-3, weight_decay=1)
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-epochs = 10
-for t in range(epochs):
-    print(f"Epoch {t+1} - {time.asctime(time.localtime(time.time()))}\n-------------------------------")
+epochs = 50
+for t in range(epochs, 200):
+    print(f"Epoch {t} - {time.asctime(time.localtime(time.time()))}\n-------------------------------")
     # print(model.parameters())
     ctu.train(ct_train_dataloader, model, loss_fn, optimizer, device)
     # print(model.parameters())
