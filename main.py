@@ -8,14 +8,15 @@ import CtImageUtils as ctu
 import time
 import os
 
-trial = 13
+trial = 14
 dest = f"modelstates/{trial}/"
 if os.path.isdir(dest) is False:
     os.mkdir(dest)
 
-ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm_fbp_32/Training/")
-ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm_fbp_32/Test/")
-ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm_fbp_32/Validation/")
+data_loc = "ellipsoids"
+ct_train_dataset = ctid.CtImageDataset(ctc.HOME_DIR + f"/data/{data_loc}/Training/")
+ct_test_dataset = ctid.CtImageDataset(ctc.HOME_DIR + f"/data/{data_loc}/Test/")
+ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + f"/data/{data_loc}/Validation/")
 print("dataset size", len(ct_train_dataset))
 
 ct_train_dataloader = DataLoader(ct_train_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
@@ -39,19 +40,20 @@ for idx in range(0, 0):
 
 # Get cpu or gpu device for training.
 device = "cuda" if torch.cuda.is_available() else "cpu"
+device = "cpu"
 print(f"Using {device} device")
 
 model = ctu.NeuralNetwork().to(device)
 print(model)
 
-model.load_state_dict(torch.load("modelstates/13/model_49.pth"))
-model.eval()
+# model.load_state_dict(torch.load("modelstates/13/model_49.pth"))
+# model.eval()
 
 loss_fn = nn.MSELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-epochs = 50
-for t in range(epochs, 200):
+epochs = range(100)
+for t in epochs:
     print(f"Epoch {t} - {time.asctime(time.localtime(time.time()))}\n-------------------------------")
     # print(model.parameters())
     ctu.train(ct_train_dataloader, model, loss_fn, optimizer, device)

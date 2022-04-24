@@ -8,9 +8,9 @@ import CtImageUtils as ctu
 import time
 import os
 
-s = 38
-epochs = range(s, 50)
-trial = 13
+s = 51
+epochs = range(s, 200)
+trial = 14
 for epoch in epochs:
     dest = f"validationdata/{trial}/{epoch}/"
     model_src = f"modelstates/{trial}/model_{epoch}.pth"
@@ -33,7 +33,7 @@ for epoch in epochs:
     # print(model)
     print(f"Epoch: {epoch}")
 
-    ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm_fbp/Validation/")
+    ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/ellipsoids/Validation/")
     ct_valid_dataloader = DataLoader(ct_valid_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
 
     model.eval()

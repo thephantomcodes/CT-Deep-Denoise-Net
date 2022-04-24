@@ -14,7 +14,7 @@ class NeuralNetwork(nn.Module):
         filt_sz = 3
         stride = 1
         padding = 1
-        self.num_features = 32
+        self.num_features = 64
         expansion = 10
 
         self.input_layer = nn.Sequential(
@@ -63,6 +63,22 @@ class NeuralNetwork(nn.Module):
             nn.ReLU(),
         )
 
+        self.contracting_path_3 = nn.Sequential(
+            nn.MaxPool2d(kernel_size=2),
+
+            nn.Conv2d(self.num_features * 4, self.num_features * 8, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 8),
+            nn.ReLU(),
+
+            nn.Conv2d(self.num_features * 8, self.num_features * 8, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 8),
+            nn.ReLU(),
+
+            nn.Conv2d(self.num_features * 8, self.num_features * 8, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 8),
+            nn.ReLU(),
+        )
+
         self.expanding_path_1 = nn.Sequential(
             nn.Conv2d(self.num_features * 4, self.num_features * 4, filt_sz, stride=stride, padding=padding),
             nn.BatchNorm2d(self.num_features * 4),
@@ -72,15 +88,15 @@ class NeuralNetwork(nn.Module):
             nn.BatchNorm2d(self.num_features * 2),
             nn.ReLU(),
 
-            nn.Conv2d(self.num_features * 2, self.num_features, filt_sz, stride=stride, padding=padding),
-            nn.BatchNorm2d(self.num_features),
+            nn.Conv2d(self.num_features * 2, self.num_features*2, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features*2),
             nn.ReLU(),
 
             nn.Upsample(scale_factor=2),
         )
 
         self.expanding_path_2 = nn.Sequential(
-            nn.Conv2d(self.num_features * 4, self.num_features * 4, filt_sz, stride=stride, padding=padding),
+            nn.Conv2d(self.num_features * 8, self.num_features * 4, filt_sz, stride=stride, padding=padding),
             nn.BatchNorm2d(self.num_features * 4),
             nn.ReLU(),
 
@@ -90,6 +106,22 @@ class NeuralNetwork(nn.Module):
 
             nn.Conv2d(self.num_features * 4, self.num_features * 2, filt_sz, stride=stride, padding=padding),
             nn.BatchNorm2d(self.num_features * 2),
+            nn.ReLU(),
+
+            nn.Upsample(scale_factor=2),
+        )
+
+        self.expanding_path_3 = nn.Sequential(
+            nn.Conv2d(self.num_features * 8, self.num_features * 8, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 8),
+            nn.ReLU(),
+
+            nn.Conv2d(self.num_features * 8, self.num_features * 8, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 8),
+            nn.ReLU(),
+
+            nn.Conv2d(self.num_features * 8, self.num_features * 4, filt_sz, stride=stride, padding=padding),
+            nn.BatchNorm2d(self.num_features * 4),
             nn.ReLU(),
 
             nn.Upsample(scale_factor=2),
@@ -111,11 +143,18 @@ class NeuralNetwork(nn.Module):
         y0 = self.input_layer(images)
         c1 = self.contracting_path_1(y0)
         c2 = self.contracting_path_2(c1)
-        e2 = self.expanding_path_2(c2)
-        e3 = torch.cat([c1, e2], 1)
-        e1 = self.expanding_path_1(e3)
-        y2 = torch.cat([y0, e1], 1)
-        return self.output_layer(y2)
+        c3 = self.contracting_path_3(c2)
+
+        e3 = self.expanding_path_3(c3)
+        e3 = torch.cat([c2, e3], 1)
+
+        e2 = self.expanding_path_2(e3)
+        e2 = torch.cat([c1, e2], 1)
+
+        e1 = self.expanding_path_1(e2)
+        y1 = self.output_layer(e1)
+        # y2 = torch.cat([y0, e1], 1)
+        return y1
 
 
 def train(dataloader, model, loss_fn, optimizer, device):
@@ -140,7 +179,7 @@ def train(dataloader, model, loss_fn, optimizer, device):
         loss.backward()
         optimizer.step()
 
-        if batch % 160 == 0:
+        if batch % 10 == 0:
             # for x in range(0, 10):
             #     plt.subplot(1, 3, 1)
             #     plt.imshow(image[x], cmap="gray")
