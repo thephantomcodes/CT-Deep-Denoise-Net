@@ -8,7 +8,7 @@ import CtImageUtils as ctu
 import time
 import os
 
-trial = 16
+trial = 17
 dest = f"modelstates/{trial}/"
 if os.path.isdir(dest) is False:
     os.mkdir(dest)
@@ -40,7 +40,7 @@ for idx in range(0, 0):
 
 # Get cpu or gpu device for training.
 device = "cuda" if torch.cuda.is_available() else "cpu"
-device = "cpu"
+#device = "cpu"
 print(f"Using {device} device")
 
 model = ctu.NeuralNetwork().to(device)

@@ -30,7 +30,9 @@ class CtImageDataset(Dataset):
         # # Image corrupted w/ Gaussian noise
         image = np.array(mat['img_n'], dtype='float32')
         # Clean image
-        label = np.array(mat['img'], dtype='float32')
+        # label = np.array(mat['img'], dtype='float32')
+        # Residual image
+        label = image - np.array(mat['img'], dtype='float32')
 
         # image = image / np.max(image)
         # label = label / np.max(label)
