@@ -8,8 +8,8 @@ import CtImageUtils as ctu
 import time
 import os
 
-trial = 17
-dest = f"modelstates/{trial}/"
+trial = 0
+dest = f"modelstates/fun_{trial}/"
 if os.path.isdir(dest) is False:
     os.mkdir(dest)
 
@@ -52,7 +52,7 @@ print(model)
 loss_fn = nn.MSELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-epochs = range(0, 100)
+epochs = range(0, 2)
 for t in epochs:
     print(f"Epoch {t} - {time.asctime(time.localtime(time.time()))}\n-------------------------------")
     # print(model.parameters())
