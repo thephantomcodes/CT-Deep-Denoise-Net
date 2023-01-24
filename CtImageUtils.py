@@ -175,13 +175,9 @@ class NeuralNetwork(nn.Module):
 def train(dataloader, model, loss_fn, optimizer, device):
     size = len(dataloader.dataset)
     model.train()
-    input0 = torch.zeros(1, ctc.BATCH_SIZE, 32, 32)
-    output0 = torch.zeros(1, ctc.BATCH_SIZE, 32, 32)
+
     for batch, (image, label, file_name) in enumerate(dataloader):
         image, label = image.to(device), label.to(device)
-        # input0 = []
-        # input0[0] = image
-        # output0[0] = label
 
         # Compute prediction error
         pred = model(image)
@@ -195,21 +191,9 @@ def train(dataloader, model, loss_fn, optimizer, device):
         optimizer.step()
 
         if batch % 10 == 0:
-            # for x in range(0, 10):
-            #     plt.subplot(1, 3, 1)
-            #     plt.imshow(image[x], cmap="gray")
-            #     plt.subplot(1, 3, 2)
-            #     plt.imshow(label[x], cmap="gray")
-            #     plt.subplot(1, 3, 3)
-            #     plt.imshow(pred[0][x].detach().numpy(), cmap="gray")
-            #     plt.show()
-
             loss, current = loss.item(), batch * len(image)
             loss_sci = "{:e}".format(loss)
             print(f"loss: {loss_sci}  [{current:>5d}/{size:>5d}] - {time.asctime(time.localtime(time.time()))}")
-            # for name, param in model.named_parameters():
-            #     if param.requires_grad:
-            #         print(name, param.data)
 
         if loss == np.nan:
             exit()
