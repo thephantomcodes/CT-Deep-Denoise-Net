@@ -8,7 +8,7 @@ import CtImageUtils as ctu
 import time
 import os
 
-trial = 0
+trial = 1
 dest = f"modelstates/fun_{trial}/"
 if os.path.isdir(dest) is False:
     os.mkdir(dest)
@@ -52,7 +52,8 @@ model.eval()
 loss_fn = nn.MSELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-epochs = range(0, 101)
+epochs = range(0, 201)
+save_states = [0, 10, 50, 100, 150, 200]
 for t in epochs:
     print(f"Epoch {t} - {time.asctime(time.localtime(time.time()))}\n-------------------------------")
     # print(model.parameters())
@@ -60,9 +61,9 @@ for t in epochs:
     # print(model.parameters())
     ctu.test(ct_test_dataloader, model, loss_fn, device)
 
-    if t%10 == 0:
+    if t in save_states:
         torch.save(model.state_dict(), f"modelstates/fun_{trial}/model_{t}.pth")
-        print("Saved PyTorch Model State to model.pth")
+        print(f"Saved PyTorch Model State to model{t}.pth")
 print("Done!")
 
 

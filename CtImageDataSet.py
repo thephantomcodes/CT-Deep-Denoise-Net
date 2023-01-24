@@ -24,8 +24,8 @@ class CtImageDataset(Dataset):
 
         # Image generated from 1/4 projections
         image = np.array(mat['fbp_1'], dtype='float32')
-        # Residual Image
-        label = np.array(mat['fbp_r'], dtype='float32')
+        # Complete Image
+        label = np.array(mat['fbp'], dtype='float32')
 
         # Image generated from 1/4 projections
         # image = np.array(mat['fbp_p'], dtype='float32')

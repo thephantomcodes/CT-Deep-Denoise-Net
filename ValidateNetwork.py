@@ -8,12 +8,14 @@ import CtImageUtils as ctu
 import time
 import os
 
-s = 99
-epochs = range(s, 100)
-trial = 17
+s = 100
+epochs = range(s, 101)
+trial = 0
 for epoch in epochs:
-    dest = f"validationdata/{trial}/{epoch}/"
-    model_src = f"modelstates/{trial}/model_{epoch}.pth"
+    dest = f"validationdata/fun_{trial}/{epoch}/"
+    model_src = f"modelstates/fun_{trial}/model_{epoch}.pth"
+    ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/mat_norm_fbp_quads/Validation/")
+    ct_valid_dataloader = DataLoader(ct_valid_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
 
     if os.path.isfile(model_src) is False:
         print(f"{model_src} not found")
@@ -23,8 +25,8 @@ for epoch in epochs:
         os.mkdir(dest)
     model = ctu.NeuralNetwork()
 
-    # device = "cuda" if torch.cuda.is_available() else "cpu"
-    device = "cpu"
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    # device = "cpu"
     print(device)
     model.load_state_dict(torch.load(model_src, map_location=torch.device(device)))
     if device == "cuda":
@@ -32,9 +34,6 @@ for epoch in epochs:
 
     # print(model)
     print(f"Epoch: {epoch}")
-
-    ct_valid_dataset = ctid.CtImageDataset(ctc.HOME_DIR + "/data/ellipsoids/Validation/")
-    ct_valid_dataloader = DataLoader(ct_valid_dataset, batch_size=ctc.BATCH_SIZE, shuffle=True)
 
     model.eval()
 

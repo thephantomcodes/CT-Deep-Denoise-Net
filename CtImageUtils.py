@@ -17,7 +17,7 @@ class NeuralNetwork(nn.Module):
         # stage 0
         self.stage_0_0 = self.conv_bn_relu(num_features_in=in_channels, num_features_out=num_features)
         self.stage_0_1 = self.conv_bn_relu(num_features_in=num_features, num_features_out=num_features)
-        self.stage_0_wt = DWTForward(wave=self.wave)
+        # self.stage_0_wt = DWTForward(wave=self.wave)
         self.stage_0_HH_0 = self.conv_bn_relu(num_features_in=num_features, num_features_out=num_features * 2)
         self.stage_0_HH_1 = self.conv_bn_relu(num_features_in=num_features * 2, num_features_out=num_features)
         self.stage_0_HL_0 = self.conv_bn_relu(num_features_in=num_features, num_features_out=num_features * 2)
@@ -28,7 +28,7 @@ class NeuralNetwork(nn.Module):
         # stage 1
         self.stage_1_0 = self.conv_bn_relu(num_features_in=num_features, num_features_out=num_features * 2)
         self.stage_1_1 = self.conv_bn_relu(num_features_in=num_features * 2, num_features_out=num_features * 2)
-        self.stage_1_wt = DWTForward(wave=self.wave)
+        # self.stage_1_wt = DWTForward(wave=self.wave)
         self.stage_1_HH_0 = self.conv_bn_relu(num_features_in=num_features * 2, num_features_out=num_features * 4)
         self.stage_1_HH_1 = self.conv_bn_relu(num_features_in=num_features * 4, num_features_out=num_features * 2)
         self.stage_1_HL_0 = self.conv_bn_relu(num_features_in=num_features * 2, num_features_out=num_features * 4)
@@ -39,7 +39,7 @@ class NeuralNetwork(nn.Module):
         # stage 2
         self.stage_2_0 = self.conv_bn_relu(num_features_in=num_features * 2, num_features_out=num_features * 4)
         self.stage_2_1 = self.conv_bn_relu(num_features_in=num_features * 4, num_features_out=num_features * 4)
-        self.stage_2_wt = DWTForward(wave=self.wave)
+        # self.stage_2_wt = DWTForward(wave=self.wave)
         self.stage_2_HH_0 = self.conv_bn_relu(num_features_in=num_features * 4, num_features_out=num_features * 8)
         self.stage_2_HH_1 = self.conv_bn_relu(num_features_in=num_features * 8, num_features_out=num_features * 4)
         self.stage_2_HL_0 = self.conv_bn_relu(num_features_in=num_features * 4, num_features_out=num_features * 8)
@@ -50,7 +50,7 @@ class NeuralNetwork(nn.Module):
         # stage 3
         self.stage_3_0 = self.conv_bn_relu(num_features_in=num_features * 4, num_features_out=num_features * 8)
         self.stage_3_1 = self.conv_bn_relu(num_features_in=num_features * 8, num_features_out=num_features * 8)
-        self.stage_3_wt = DWTForward(wave=self.wave)
+        # self.stage_3_wt = DWTForward(wave=self.wave)
         self.stage_3_HH_0 = self.conv_bn_relu(num_features_in=num_features * 8, num_features_out=num_features * 16)
         self.stage_3_HH_1 = self.conv_bn_relu(num_features_in=num_features * 16, num_features_out=num_features * 8)
         self.stage_3_HL_0 = self.conv_bn_relu(num_features_in=num_features * 8, num_features_out=num_features * 16)
