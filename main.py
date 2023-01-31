@@ -46,14 +46,18 @@ print(f"Using {device} device")
 model = ctu.NeuralNetwork().to(device)
 print(model)
 
-# model.load_state_dict(torch.load("modelstates/15/model_20.pth"))
-model.eval()
-
 loss_fn = nn.MSELoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
 
-epochs = range(0, 201)
-save_states = [0, 10, 50, 100, 150, 200]
+start = 1201
+end = 1202
+if start > 0:
+    print(f"loading model_{start-1}.pth")
+    model.load_state_dict(torch.load(f"modelstates/fun_{trial}/model_{start-1}.pth"))
+    model.eval()
+
+epochs = range(start, end)
+save_states = [1201, 1200]
 for t in epochs:
     print(f"Epoch {t} - {time.asctime(time.localtime(time.time()))}\n-------------------------------")
     # print(model.parameters())
