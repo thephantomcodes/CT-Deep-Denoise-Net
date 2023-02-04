@@ -11,9 +11,9 @@ import os
 from matplotlib import pyplot as plt
 from skimage import metrics
 
-epochs = [100]
-epochs = [200, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200]
-trial = 1
+epochs = [300, 400]
+# epochs = [200, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200]
+trial = 2
 
 show_all_img = True
 img_to_show = ['ID_0016_AGE_0063_CONTRAST_1_CT_0_0.mat', 'ID_0047_AGE_0069_CONTRAST_1_CT_0_1.mat']
@@ -88,6 +88,6 @@ for epoch in epochs:
                     plt.tight_layout()
                     plt.savefig(f"{dest_plot}/{file_name.replace('.mat', f'_{epoch}_denoised.png')}")
 
-                    print(epoch, file_name, pred_psnr, pred_ssim)
+                    print(epoch, file_name, pred_psnr, pred_ssim, label_psnr, label_ssim)
                     # print(torch.max(imgPatch) - torch.min(imgPatch))
                     scio.savemat(f"{dest}/{file_name}", {'imgPatch': np.array(predPatch)})

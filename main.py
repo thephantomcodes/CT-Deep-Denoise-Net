@@ -8,7 +8,7 @@ import CtImageUtils as ctu
 import time
 import os
 
-trial = 1
+trial = 2
 dest = f"modelstates/fun_{trial}/"
 if os.path.isdir(dest) is False:
     os.mkdir(dest)
@@ -47,23 +47,32 @@ model = ctu.NeuralNetwork().to(device)
 print(model)
 
 loss_fn = nn.MSELoss()
-optimizer = torch.optim.SGD(model.parameters(), lr=1e-3)
+optimizer = torch.optim.SGD(model.parameters(), lr=1e-5, weight_decay=1e-4)
 
-start = 1201
-end = 1202
-if start > 0:
+# adjust learning rate from 1e-3 to 1e-5 over 100 epochs
+scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=1, gamma=0.955, verbose=True)
+scheduler.last_epoch = 100
+
+start = 201
+end = 401
+if start > 1:
     print(f"loading model_{start-1}.pth")
     model.load_state_dict(torch.load(f"modelstates/fun_{trial}/model_{start-1}.pth"))
     model.eval()
 
 epochs = range(start, end)
-save_states = [1201, 1200]
+save_states = [50, 100, 150, 200]
+print(f"last epoch {scheduler.last_epoch}")
+
 for t in epochs:
     print(f"Epoch {t} - {time.asctime(time.localtime(time.time()))}\n-------------------------------")
     # print(model.parameters())
     ctu.train(ct_train_dataloader, model, loss_fn, optimizer, device)
     # print(model.parameters())
-    ctu.test(ct_test_dataloader, model, loss_fn, device)
+    ctu.test(ct_valid_dataloader, model, loss_fn, device)
+    if t < scheduler.last_epoch:
+        scheduler.step()
+    print(f"Scheduler step {scheduler.get_last_lr()}, {scheduler.get_lr()}")
 
     if t in save_states:
         torch.save(model.state_dict(), f"modelstates/fun_{trial}/model_{t}.pth")
