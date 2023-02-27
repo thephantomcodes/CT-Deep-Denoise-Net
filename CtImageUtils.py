@@ -168,7 +168,7 @@ class NeuralNetwork(nn.Module):
         stage_0_LL_reconstruction_0 = self.stage_0_reconstruction_0(stage_0_reconstruction + stage_0_1)
         stage_0_LL_reconstruction_1 = self.stage_0_reconstruction_1(stage_0_LL_reconstruction_0)
 
-        out = self.reconstruction_output(stage_0_LL_reconstruction_1) + x
+        out = self.reconstruction_output(stage_0_LL_reconstruction_1)
         return out
 
 

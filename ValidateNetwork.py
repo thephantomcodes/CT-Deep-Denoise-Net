@@ -11,9 +11,9 @@ import os
 from matplotlib import pyplot as plt
 from skimage import metrics
 
-epochs = [300, 400]
+epochs = [400]
 # epochs = [200, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200]
-trial = 2
+trial = 3
 
 show_all_img = True
 img_to_show = ['ID_0016_AGE_0063_CONTRAST_1_CT_0_0.mat', 'ID_0047_AGE_0069_CONTRAST_1_CT_0_1.mat']
@@ -84,9 +84,14 @@ for epoch in epochs:
                         plt.savefig(f"{dest_plot}/{file_name.replace('.mat', f'_0_quarter.png')}")
 
                     plt.title(f"Denoised - Epoch {epoch}\nPSNR: {pred_psnr:.2f} SSIM {pred_ssim:.4f}")
-                    plt.imshow(predPatch, cmap="gray")
+                    plt.imshow(imgPatch - predPatch, cmap="gray")
                     plt.tight_layout()
                     plt.savefig(f"{dest_plot}/{file_name.replace('.mat', f'_{epoch}_denoised.png')}")
+
+                    plt.title(f"Noise - Epoch {epoch}\n")
+                    plt.imshow(predPatch, cmap="gray")
+                    plt.tight_layout()
+                    plt.savefig(f"{dest_plot}/{file_name.replace('.mat', f'_{epoch}_noise.png')}")
 
                     print(epoch, file_name, pred_psnr, pred_ssim, label_psnr, label_ssim)
                     # print(torch.max(imgPatch) - torch.min(imgPatch))
